@@ -7,18 +7,17 @@ import android.os.Handler;
 
 import com.fluidcoding.brian.stopwatchbinded.BR;
 
+import java.io.Serializable;
+
 /**
  * Created by brian on 10/29/2015.
  */
-public class WatchTime extends BaseObservable {
+public class WatchTime extends BaseObservable implements Serializable{
     private boolean running;
     private String seconds;
+    private Long hours, minutes;
     private Long startTime;
     private Long stopTime;
-
-    public WatchTime(int seconds) {
-        this.seconds = String.valueOf(seconds);
-    }
 
     public WatchTime() {
         running = false;
@@ -39,6 +38,7 @@ public class WatchTime extends BaseObservable {
     }
 
     public void start() {
+        if(running) return;
         running = true;
         if (startTime != 0)
             startTime = System.currentTimeMillis() - (stopTime-startTime);
@@ -46,7 +46,9 @@ public class WatchTime extends BaseObservable {
             startTime = System.currentTimeMillis();
     }
 
+
     public void stop() {
+        if(!running)return;
         stopTime = System.currentTimeMillis();
         running = false;
     }
@@ -65,7 +67,10 @@ public class WatchTime extends BaseObservable {
 
     @Bindable
     public void setSeconds(Long seconds) {
-        this.seconds = String.valueOf(seconds);
+        hours = seconds / 3600L;
+        minutes = (seconds % 3600L) / 60L;
+        seconds %= 60L;
+        this.seconds = String.format("%d:%02d:%02d", hours, minutes, seconds);
         notifyPropertyChanged(BR.seconds);
     }
 }

@@ -16,8 +16,17 @@ public class StopWatch extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         final ActivityStopWatchBinding bind = DataBindingUtil.setContentView(this, R.layout.activity_stop_watch);
-        time = new WatchTime();
+
+        if(savedInstanceState!=null && savedInstanceState.containsKey("watch"))
+            time = (WatchTime) savedInstanceState.getSerializable("watch");
+        else
+            time = new WatchTime();
+
         bind.setWatch(time);
+    }
+
+    protected void onSaveInstanceState(Bundle bundle){
+        bundle.putSerializable("watch", time);
     }
 
     public void onStartClick(View v){
